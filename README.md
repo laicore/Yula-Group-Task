@@ -1,6 +1,6 @@
 # Yula-Group-Task
 admin login: laicore\
-admin pass: qwer1234\
+admin pass: qwer1234
 
 1) Регистрация пользователей.
 2) Авторизация пользователей.
