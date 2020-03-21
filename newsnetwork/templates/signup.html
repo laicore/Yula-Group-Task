@@ -1,0 +1,8 @@
+<form action="{{actionPath}}" method="POST">
+{% csrf_token %} 
+
+{%for filed in form %}
+    <p {% if filed.errors %}class="{{filed.errors}} "{% endif %} >{{filed.label}}{{filed}}</p>
+{% endfor %}
+<button type="submit">Регистрация</button>
+</form>

@@ -1,0 +1,10 @@
+<form action="{{actionPath}}" method="POST">
+{% csrf_token %} 
+{% if form.username.errors or form.password.errors%}
+    <ul> <li>Логин или пароль введен неправильно</li> </ul> 
+{% endif %}
+{%for filed in form %}
+    <p>{{filed.label}}{{filed}}</p>
+{% endfor %}
+<button type="submit">Вход</button>
+</form>
