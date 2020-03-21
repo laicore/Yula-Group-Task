@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from .forms import *
-# Create your views here.
 from django.contrib.auth import authenticate, login as _login, logout as _logout
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+
+# Create your views here.
 
 
 @login_required
@@ -25,10 +26,9 @@ def signup(request):
                                 password=request.POST['password'])
             _login(request, auth)
             return HttpResponseRedirect('/')
-    templ = 'signup.html'
     return render(request, 'base.html',
                   {
-                      'templ': templ,
+                      'templ': 'signup.html',
                       'actionPath': request.path,
                       'form': form
                   })
@@ -36,7 +36,6 @@ def signup(request):
 
 def postshow(request, id):
     post = get_object_or_404(PostModel, id=id)
-    print(not request.user.is_superuser)
     if post.moderated == False:
         if (request.user != post.author) and (not request.user.is_superuser):
             raise Http404('post not found')
@@ -47,24 +46,29 @@ def postshow(request, id):
 
 
 @login_required
+def profile(request):
+    user = request.user
+    userPosts = PostModel.objects.filter(author=user)
+    form = {'user': user, 'userPosts': userPosts}
+    return render(request, 'base.html', {
+        'form': form,
+        'templ':'profile.html'
+    })
+
+
+@login_required
 def addNews(request):
+    form = AddNewsForm(request.user or None,
+                       data=request.POST or None, files=request.FILES or None)
     if request.method == 'POST':
-        form = AddNewsForm(request.user, data=request.POST,
-                           files=request.FILES)
-        val = form.is_valid()
-        print(val)
-        if val:
+        if form.is_valid():
             post = form.save()
             url = post.get_url()
             return HttpResponseRedirect(url)
-        return HttpResponseRedirect(request.path)
 
-    form = AddNewsForm()
-
-    templ = 'addNews.html'
     return render(request, 'base.html', {
         'form': form,
-        'templ': templ,
+        'templ': 'addNews.html',
         'actionPath': request.path
     })
 
@@ -80,10 +84,9 @@ def login(request):
             _login(request, auth)
             return HttpResponseRedirect('/')
 
-    templ = 'login.html'
     return render(request, 'base.html',
                   {
-                      'templ': templ,
+                      'templ': 'login.html',
                       'actionPath': request.path,
                       'form': form
                   })

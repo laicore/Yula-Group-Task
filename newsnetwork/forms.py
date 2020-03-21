@@ -79,8 +79,6 @@ class LoginForm(forms.Form):
 class AddNewsForm(forms.ModelForm):
     def __init__(self, user=None, **kwargs):
         super(AddNewsForm, self).__init__(**kwargs)
-        print(kwargs)
-
         if user:
             self.user = user
 
@@ -91,18 +89,25 @@ class AddNewsForm(forms.ModelForm):
             'text': forms.Textarea(),
         }
 
-    # def clean_text(self):
-    #     if self.cleaned_data['text'] is None and self.data['image'] is None:
-    #         raise forms.ValidationError(
-    #             'Должен быть заполнен хотя бы текст или загружено изображение')
+    def clean_text(self):
+        text = self.cleaned_data['text']
+        image = 1 if 'image' in self.files else None
+        if text is None and image is None:
+            print('сработал клин text')
+            raise forms.ValidationError(
+                'Должен быть заполнен хотя бы текст или загружено изображение')
+        return text
 
-    # def clean_image(self):
-    #     if self.data['text'] is None and self.cleaned_data['image'] is None:
-    #         raise forms.ValidationError(
-    #             'Должен быть заполнен хотя бы текст или загружено изображение')
+    def clean_image(self):
+        text = self.data['text']
+        image = self.cleaned_data['image']
+        if text is '' and image is None:
+            print('сработал клин image')
+            raise forms.ValidationError(
+                'Должен быть заполнен хотя бы текст или загружено изображение')
+        return image
 
     def save(self):
-        print(self.cleaned_data)
         post = PostModel(**self.cleaned_data, author=self.user)
         post.save()
         return post

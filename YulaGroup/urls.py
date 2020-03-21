@@ -24,7 +24,8 @@ urlpatterns = [
     path('login/',views.login),
     path('',views.main),    
     path('addpost/',views.addNews),
-    path('post/<int:id>/',views.postshow)
+    path('post/<int:id>/',views.postshow),
+    path('profile/',views.profile)
 ]
 
 # if settings.DEBUG:

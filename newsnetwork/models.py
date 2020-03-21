@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from os import remove as _rm
 
 # Create your models here.
 
@@ -13,5 +14,9 @@ class PostModel(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     addedDatetime = models.DateTimeField(auto_now=True)
     moderated = models.BooleanField(default=False)
+
     def get_url(self):
         return "/post/"+str(self.id)
+
+    class Meta:
+        verbose_name = "Post"

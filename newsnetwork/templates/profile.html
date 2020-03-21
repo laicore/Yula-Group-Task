@@ -1,0 +1,8 @@
+<h3>{{form.user.username}}</h3>
+<p>Дата регистрации: {{form.user.date_joined}}</p>
+<hr>
+<p>Опубликованные вами посты:</p>
+{% if not form.userPosts  %} <p><b> Вы ещё ничего не добавляли</b></p>{% endif %}
+{% for post in form.userPosts %}
+<p><a href="{{post.get_url}}">{{post.name}} </a>{% if not post.moderated %}(не проверено){% endif %}</p>
+{% endfor %}
