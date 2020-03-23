@@ -1,0 +1,40 @@
+<script>
+
+    let page = 1;
+    async function start() {
+
+        let response = await fetch('/loadNews?page=' + page);
+        let result = await response.json();
+        if (result['status'] === 'ok') {
+            let posts = result['data']
+            let content = document.getElementById('content')
+            for (let i = 0; i < Object.keys(posts).length; i++) {
+                let p1 = document.createElement('p');
+                let a1 = document.createElement('a');
+                a1.href = posts[i]['url'];
+                a1.innerText = posts[i]['name'];
+                p1.append(a1);
+
+                ClickMe.before(p1);
+            }
+
+            page++;
+        }
+        if (result['status'] === 'warning') {
+            console.log(result['warn']);
+            if (!document.getElementById('finishContentMessage')) {
+                let message = document.createElement('p')
+                message.id = 'finishContentMessage'
+                message.innerText = 'Вы загрузили все последние новости'
+                ClickMe.before(message);
+            }
+        }
+
+    }
+    start()
+</script>
+
+<div id="content">
+    <input id='ClickMe' type="submit" value="ещё" onclick="start()" />
+
+</div>
